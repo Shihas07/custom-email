@@ -27,8 +27,11 @@ export default function MainFlow({ data }) {
     }
   }, [data, setNodes]);
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
+    (params) =>
+      setEdges((eds) =>
+        addEdge({ ...params, animated: true, style: { stroke: "#1890ff" } }, eds)
+      ),
+    [setEdges]
   );
 
   return (

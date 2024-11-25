@@ -14,15 +14,15 @@ export default function MainFlow({ data }) {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      // Map through the data array to create multiple nodes
+      
       const newNodes = data.map((item, index) => ({
-        id: `${index + 1}`, // Generate unique id for each node
+        id: `${index + 1}`, 
         position: { x: 100 * (index + 1), y: 100 }, // Offset position for better visualization
         data: { label: item?.name || "Default Label" },
       }));
-      setNodes(newNodes); // Set all nodes at once
+      setNodes(newNodes); 
     } else {
-      // Clear nodes when data is empty or invalid
+     
       setNodes([]);
     }
   }, [data, setNodes]);

@@ -14,15 +14,22 @@ export default function MainFlow({ data }) {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      
       const newNodes = data.map((item, index) => ({
         id: `${index + 1}`, 
-        position: { x: 100 * (index + 1), y: 100 }, // Offset position for better visualization
+        position: { x: 100 * (index + 1), y: 100 }, // Offset position
         data: { label: item?.name || "Default Label" },
       }));
-      setNodes(newNodes); 
+  
+      // Merge new nodes with existing nodes, preserving their positions
+      setNodes((prev) => {
+        const existingNodeIds = prev.map((node) => node.id);
+        const mergedNodes = [
+          ...prev,
+          ...newNodes.filter((node) => !existingNodeIds.includes(node.id)),
+        ];
+        return mergedNodes;
+      });
     } else {
-     
       setNodes([]);
     }
   }, [data, setNodes]);

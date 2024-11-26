@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
-import{ ReactFlow, 
+import {
+  ReactFlow,
   useNodesState,
   useEdgesState,
   addEdge,
@@ -9,7 +10,7 @@ import "@xyflow/react/dist/style.css";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
 // Step 1: Create a Custom Node Component with Handles
-const CustomNode = ({ data }) => {
+const CustomNode = ({ data, onDelete }) => {
   return (
     <div
       style={{
@@ -25,15 +26,19 @@ const CustomNode = ({ data }) => {
         position: "relative", // Required for correct handle positioning
       }}
     >
-      {/* Source and Target Handles */}
+      {/* Target and Source Handles */}
       <Handle
         type="target"
         position="top"
         style={{ background: "#1890ff", top: -10 }}
       />
-      
       <span>{data.label}</span>
-      <IoIosCloseCircleOutline  style={{cursor:"pointer"}} size={20} color="#4A90E2" />
+      <IoIosCloseCircleOutline
+        onClick={() => onDelete(data.id)} // Call the delete handler
+        style={{ cursor: "pointer" }}
+        size={20}
+        color="#4A90E2"
+      />
       <Handle
         type="source"
         position="bottom"
@@ -43,19 +48,28 @@ const CustomNode = ({ data }) => {
   );
 };
 
-const nodeTypes = { custom: CustomNode }; // Register custom node type
+// Step 2: Define Node Types
+const nodeTypes = {
+  custom: (props) => <CustomNode {...props} onDelete={props.data.onDelete} />,
+};
 
+// Step 3: Main Flow Component
 export default function MainFlow({ data }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
+  // Update Nodes When Data Changes
   useEffect(() => {
     if (data && data.length > 0) {
       const newNodes = data.map((item, index) => ({
-        id: `${index + 1}`,
+        id: `${index + 1}`, // Node ID
         type: "custom", // Use custom node type
         position: { x: 100 * (index + 1), y: 100 },
-        data: { label: item?.name || "Default Label" },
+        data: {
+          id: `${index + 1}`, // Pass the ID to the node's data
+          label: item?.name || "Default Label",
+          onDelete: handleDelete, // Pass delete handler to node data
+        },
       }));
 
       setNodes((prev) => {
@@ -71,12 +85,28 @@ export default function MainFlow({ data }) {
     }
   }, [data, setNodes]);
 
+  // Handle Connections (Edges)
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
-        addEdge({ ...params, animated: true, style: { stroke: "#1890ff" } }, eds)
+        addEdge(
+          { ...params, animated: true, style: { stroke: "#1890ff" } },
+          eds
+        )
       ),
     [setEdges]
+  );
+
+  // Delete Node and Associated Edges
+  const handleDelete = useCallback(
+    (id) => {
+      setNodes((nds) => nds.filter((node) => node.id !== id));
+      
+      setEdges((eds) =>
+        eds.filter((edge) => edge.source !== id && edge.target !== id)
+      );
+    },
+    [setNodes, setEdges]
   );
 
   return (
@@ -87,7 +117,7 @@ export default function MainFlow({ data }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        nodeTypes={nodeTypes} // Provide custom node types
+        nodeTypes={nodeTypes} // Register custom node types
       />
     </div>
   );

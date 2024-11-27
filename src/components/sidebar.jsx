@@ -41,7 +41,7 @@ export default function Sidebar() {
             <div className="mt-5 w-full">
               <ul className="list-disc list-inside mt-5 ">
                {data.map((val,ind)=>(
-                   <button key={val.id} onClick={()=>handleClick(val.id)} className="flex mt-10 bg-slate-400 py-5 p-10">{val.name}</button>
+                   <button key={val.id} onClick={()=>handleClick(val.id)} className="flex mt-10 bg-slate-400 py-5 p-10 rounded-lg">{val.name}</button>
                ))}
               </ul>
             </div>

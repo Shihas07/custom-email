@@ -1,13 +1,19 @@
-
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import LoginData from "../utilities/login";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  console.log(formData);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validationErrors = {};
@@ -15,23 +21,32 @@ export default function Login() {
     // Email Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
-      validationErrors.email = 'Email is required';
+      validationErrors.email = "Email is required";
     } else if (!emailRegex.test(email)) {
-      validationErrors.email = 'Invalid email format';
+      validationErrors.email = "Invalid email format";
     }
 
     // Password Validation
     if (!password) {
-      validationErrors.password = 'Password is required';
+      validationErrors.password = "Password is required";
     } else if (password.length < 6) {
-      validationErrors.password = 'Password must be at least 6 characters';
+      validationErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      alert('Form submitted successfully!');
-      // Perform further actions like API call here
+      setFormData({
+        email: email,
+        password: password,
+      });
+    }
+
+    const response = await LoginData(formData);
+
+    console.log("responseLogin", response);
+    if (response.message === "Login successful") {
+      navigate("/");
     }
   };
 
@@ -41,11 +56,16 @@ export default function Login() {
         className="bg-white p-6 rounded shadow-md w-full max-w-sm"
         onSubmit={handleSubmit}
       >
-        <h2 className="text-lg font-bold mb-4 flex justify-center items-center">Login</h2>
+        <h2 className="text-lg font-bold mb-4 flex justify-center items-center">
+          Login
+        </h2>
 
         {/* Email Field */}
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email
           </label>
           <input
@@ -63,7 +83,10 @@ export default function Login() {
 
         {/* Password Field */}
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Password
           </label>
           <input
@@ -90,5 +113,3 @@ export default function Login() {
     </div>
   );
 }
-
-   

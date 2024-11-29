@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import LoginData from "../utilities/login";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { setUser } from "../redux/slice";
+  import { useSelector } from "react-redux";
 
 export default function Login() {
+  const data = useSelector((state) => state.user.userDetails);
+
+  console.log("datafromRedux",data)
+
+  const dispatch=useDispatch()
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,6 +54,11 @@ export default function Login() {
 
     console.log("responseLogin", response);
     if (response.message === "Login successful") {
+
+      dispatch(setUser(response.data));
+
+
+         
       navigate("/");
     }
   };

@@ -18,9 +18,12 @@ const userSlice = createSlice({
       state.userDetails = null; // Clear user details
       state.isAuthenticated = false; // Set authenticated state to false
     },
+    emailData:(state)=>{
+        state.userDetails=[]
+    }
   },
 });
 
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser,emailData } = userSlice.actions;
 export default userSlice.reducer;

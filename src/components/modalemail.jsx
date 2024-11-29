@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Modal from "react-modal";
 import { RiCloseFill } from "react-icons/ri";
+import { emailData } from "../redux/slice";
+import { useDispatch } from "react-redux";
 
 const customStyles = {
   content: {
@@ -15,6 +17,7 @@ const customStyles = {
 };
 
 export default function Modalemail({ open, onClose }) {
+  const dispatch=useDispatch()
   const [emailData, setEmailData] = useState({
     email: "",
     body: "",
@@ -64,7 +67,13 @@ export default function Modalemail({ open, onClose }) {
     const formErrors = validation(emailData);
   setError(formErrors);
 
+
+
       setFormValues(emailData)
+
+       
+
+        
   };
   return (
     <div className="flex">
@@ -96,7 +105,7 @@ export default function Modalemail({ open, onClose }) {
             <form
               className="w-full flex flex-col gap-4 "
               action="
-                  "
+                  " 
               onSubmit={handleSubmit}
             >
               <input

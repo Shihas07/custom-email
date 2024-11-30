@@ -4,10 +4,14 @@ import Modal from 'react-modal';
 
 export default function WaitDelay({ open, onClose }) {
 
-    const [delay,setDelay]=useState("")
+    const [delay,setDelay]=useState({
+          
+        Time:""
+    })
+    console.log("delay",delay)
     const [timeDelay,setTime]=useState([])
 
-    console.log(timeDelay)
+    console.log("timeDelay",timeDelay)
 
 
   const customStyles = {
@@ -30,15 +34,31 @@ export default function WaitDelay({ open, onClose }) {
     },
   };
 
-  const handleChange=(e)=>{
-      
-    setDelay(e.target.value)
-  }
+  const handleChange = (e) => {
+    const { value } = e.target;
 
-  const handeSubmit=(e)=>{
-    e.preventDefault()
-     setTime(delay)
-  }
+   
+
+    // Update the delay time state correctly
+    setDelay((prev) => ({
+      ...prev,
+      Time: value, // Update the Time field with the new value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Append the current delay to the timeDelay array
+    setTime((prev) => [...prev, delay]);
+
+    // Optionally reset the input field
+    setDelay({ Time: "" });
+
+   
+    
+  };
+
 
   return (
     <div>
@@ -50,15 +70,17 @@ export default function WaitDelay({ open, onClose }) {
       >
         <div className="flex flex-col items-center space-y-4">
           <h2 className="text-lg font-bold text-blue-600">Wait Delay Settings</h2>
-          <form className="flex flex-col space-y-2 w-full" onSubmit={handeSubmit}>
+          <form className="flex flex-col space-y-2 w-full" onSubmit={handleSubmit}>
             <label className="block text-sm font-medium text-gray-700">
               Delay Time (in seconds)
             </label>
             <input
               type="number"
+              value={delay.Time}
               placeholder="Enter delay time"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                onChange={handleChange}
+
             />
             <div className="flex space-x-2 justify-center">
               <button

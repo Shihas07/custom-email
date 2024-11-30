@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Modal from "react-modal";
 import { RiCloseFill } from "react-icons/ri";
-import { emailData } from "../redux/slice";
+import { emailDatas } from "../redux/slice";
 import { useDispatch } from "react-redux";
 
 const customStyles = {
@@ -24,14 +24,14 @@ export default function Modalemail({ open, onClose }) {
   });
   const [error, setError] = useState({});
  const [formValues,setFormValues]=useState([])
- console.log("formValues",formValues)
+//  console.log("formValues",formValues)
   // console.log(email);
 
   const handleChange = (e) => {
-    console.log(e);
+    // console.log(e);
 
     const { name, value } = e.target;
-    console.log("data", name, value);
+    // console.log("data", name, value);
     // setEmailData((preview) => ({
     //   ...preview,
     //   [name]: value,
@@ -61,19 +61,16 @@ export default function Modalemail({ open, onClose }) {
 
     return errors;
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const formErrors = validation(emailData);
-  setError(formErrors);
-
-
-
-      setFormValues(emailData)
-
-       
-
-        
+    setError(formErrors);
+  
+    if (Object.keys(formErrors).length === 0) {
+      dispatch(emailDatas(emailData)); 
+      onClose(); // Close modal
+      setEmailData({ email: "", body: "" });
+    }
   };
   return (
     <div className="flex">
@@ -138,3 +135,4 @@ export default function Modalemail({ open, onClose }) {
     </div>
   );
 }
+     
